@@ -8,6 +8,8 @@
 
     $action = $_GET['action'] ?? null;
 
+    $change;
+
 ?>
 
 <html>
