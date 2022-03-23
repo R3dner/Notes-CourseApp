@@ -1,43 +1,38 @@
 <?php
 
-    declare(strict_types=1);
+declare(strict_types=1);
 
-    namespace App;
+spl_autoload_register(function(string $classNamespace){
+    $path = str_replace(['\\', 'App'], ['/', ''], $classNamespace);
+    $path = "src$path.php";
+    require_once($path);
+});
 
-    require_once("src/utils/debug.php");
+require_once("src/utils/debug.php");
+$db_config = require_once("config/db_conf.php");
 
-    $action = $_GET['action'] ?? null;
+use App\Request;
+use App\Controller\AbstractController;
+use App\Controller\NoteController;
+use App\Exception\AppException;
+use App\Exception\ConfigurationException;
 
-    $change;
+$request = new Request($_GET, $_POST, $_SERVER);
 
+try{
+    AbstractController::initConfiguration($db_config);
+
+    $controller = new NoteController($request);
+    $controller->run();
+}catch(ConfigurationException $e){
+    echo "<h1>Wystąpił błąd aplikacji</h1>";
+    echo '<h3>Problem z konfiguracją.</h3>
+            Proszę skontaktować się z administratorem';
+}catch(AppException $e){
+    echo "<h1>Wystąpił błąd aplikacji</h1>";
+    echo '<h3>' . $e->getMessage() . '</h3>';
+}catch(Throwable $e){
+    echo "<h1>Wystąpił błąd aplikacji</h1>";
+}
 ?>
 
-<html>
-    <head>
-
-    </head>
-
-    <body>
-        <header>
-            <h1>Moje notatki</h1>
-        </header>
-
-        <container>
-            <menu>
-                <ul>
-                    <li>
-                        <a href="/">Lista notatek</a>
-                    </li>
-                    <li>
-                        <a href="/?action=create">Nowa notatka</a>
-                    </li>
-                </ul>
-            </menu>
-        </container>
-
-        <footer>
-
-        </footer>
-
-    </body>
-</html>

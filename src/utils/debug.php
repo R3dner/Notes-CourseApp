@@ -7,6 +7,7 @@ ini_set('display_errors', '1');
 
 function dump($data){
     echo '
+        <br/>
         <div
         style="
             display: inline-block;
@@ -17,6 +18,6 @@ function dump($data){
         <pre>';
 
         print_r($data);
-        echo '</pre></div></br>';
+        echo '</pre></div><br/>';
 }
 ?>
